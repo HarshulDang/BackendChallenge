@@ -75,6 +75,32 @@ app.all("/stats", function(req, res, next) {
             break;
         }
     }
+
+    var aMinuteAgo = now - (1000 * 60);
+    var minCnt = 0;
+    // since recent requests are at the end of the array, search the array
+    // from back to front
+    for (var i = requests.length - 1; i >= 0; i--) {
+        if (requests[i] >= aMinuteAgo) {
+            ++minCnt;
+        } else {
+            break;
+        }
+    }
+
+    var aHourAgo = now - (1000 * 60 *60);
+    var hrCnt = 0;
+    // since recent requests are at the end of the array, search the array
+    // from back to front
+    for (var i = requests.length - 1; i >= 0; i--) {
+        if (requests[i] >= aHourAgo) {
+            ++hrCnt;
+        } else {
+            break;
+        }
+    }
+    res.json({requestsLastSec: secCnt , requestsLastMinute: minCnt , requestsLastHour: hrCnt , /*avgResTime: express.responseTime()*/});
+});
 //----------------------------------------------------------------------------------------------------
 
 var server = app.listen(8081, function () {
