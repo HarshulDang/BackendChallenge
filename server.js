@@ -10,9 +10,10 @@ var responseTime = require('response-time');
    return Math.random() * (high - low) + low;
 }
 app.get('/process', function (req, res) {
-	
+	setTimeout(function(){
 		 res.json({ time : new Date(), method : 'GET' , path : '/process' , headers : req.headers ,
 				query : req.query , duration : (random(15000,30000)/1000).toString()+"sec"});
+	},random(15000,30000))
 })
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -38,4 +39,13 @@ app.delete('/process', function(req, res){
 		 res.json({ time : new Date(), method : 'DELETE' , path : '/process' , headers : req.headers ,
 				query : req.query , body:req.body , duration : (random(15000,30000)/1000).toString()+"sec"});
 	},random(15000,30000))
+})
+
+//----------------------------------------------------------------------------------------------------
+
+var server = app.listen(8081, function () {
+   var host = server.address().address
+   var port = server.address().port
+
+   console.log("Example app listening at http://%s:%s", host, port);
 })
