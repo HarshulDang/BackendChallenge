@@ -49,6 +49,7 @@ app.delete('/process', function(req, res){
 var requests = [];
 var requestTrimThreshold = 5000;
 var requestTrimSize = 4000;
+var getCount = 0 , postCount = 0 , putCount = 0 , deleteCount = 0;
 
 app.all("/stats", function(req, res, next) {
 	requests.push(Date.now());
@@ -57,49 +58,61 @@ app.all("/stats", function(req, res, next) {
     if (requests.length > requestTrimThreshold) {
         requests = requests.slice(0, requests.length - requestTrimSize);
     }
-    next();
+    // next();
 
     req.start = Date.now();
-    next();
+    // next();
 
     var time = Date.now() - req.start;
     var now = Date.now();
     var aSecAgo = now - 1000;
-    var secCnt = 0;
+    var secCount = 0;
     // since recent requests are at the end of the array, search the array
     // from back to front
     for (var i = requests.length - 1; i >= 0; i--) {
         if (requests[i] >= aSecAgo) {
-            ++secCnt;
+            ++secCount;
         } else {
             break;
         }
     }
 
     var aMinuteAgo = now - (1000 * 60);
-    var minCnt = 0;
+    var minCount = 0;
     // since recent requests are at the end of the array, search the array
     // from back to front
     for (var i = requests.length - 1; i >= 0; i--) {
         if (requests[i] >= aMinuteAgo) {
-            ++minCnt;
+            ++minCount;
         } else {
             break;
         }
     }
 
     var aHourAgo = now - (1000 * 60 *60);
-    var hrCnt = 0;
+    var hrCount = 0;
     // since recent requests are at the end of the array, search the array
     // from back to front
     for (var i = requests.length - 1; i >= 0; i--) {
         if (requests[i] >= aHourAgo) {
-            ++hrCnt;
+            ++hrCount;
         } else {
             break;
         }
     }
-    res.json({requestsLastSec: secCnt , requestsLastMinute: minCnt , requestsLastHour: hrCnt , /*avgResTime: express.responseTime()*/});
+
+	if (req.method == 'GET') {
+	   	getCount++;
+	} else if (req.method == 'POST'){
+	   	postCount++;
+    } else if (req.method == 'PUT'){
+	   	putCount++;
+    } else if(req.method == 'DELETE'){
+	   	deleteCount++;
+    } 
+    res.json({requestsLastSec: secCount , requestsLastMinute: minCount , requestsLastHour: hrCount ,
+    	 GETRequest: getCount , POSTRequest: postCount , PUTRequest: putCount , DELETERequest: deleteCount , 
+    		TotalRequests: getCount+postCount+putCount+deleteCount});
 });
 //----------------------------------------------------------------------------------------------------
 
