@@ -1,8 +1,13 @@
 var express = require('express');
 var app = express();
+var server = require('http').createServer(app);
 var start = new Date();
 var bodyParser = require('body-parser');
 var responseTime = require('response-time');
+
+server.listen(process.env.PORT || 8081, function(){
+	console.log('Server Running...',process.env.PORT || 8081);	
+});
 
 //process
 //---------------------------------------------------------------------------------------------------
@@ -116,9 +121,9 @@ app.all("/stats", function(req, res, next) {
 });
 //----------------------------------------------------------------------------------------------------
 
-var server = app.listen(8081, function () {
-   var host = server.address().address
-   var port = server.address().port
+// var server = app.listen(8081, function () {
+//    var host = server.address().address
+//    var port = server.address().port
 
-   console.log("Example app listening at http://%s:%s", host, port);
-})
+//    console.log("Example app listening at http://%s:%s", host, port);
+// })
